@@ -7,6 +7,8 @@ namespace AnalisadorSintatico
 {
     public class AnalisadorLexico
     {
+
+        //REPRESENTA A PALAVRAS RESERVADAS DA EXPRESSÃO 
         static Dictionary<string, string> palavraReservada = new Dictionary<string, string>()
         {
             { "for", "1" },
@@ -14,6 +16,8 @@ namespace AnalisadorSintatico
             { "range", "3" }
         };
 
+
+        //REPRESENTA OS CARACTERES ESPECIAIS DA EXPRESSÃO
         static Dictionary<char, string[]> caractereEspecial = new Dictionary<char, string[]>()
         {
             { '(', new string[] { "4", "ABRE PARENT." } },
@@ -21,6 +25,8 @@ namespace AnalisadorSintatico
             { ',', new string[] { "6", "VIRGULA." } }
         };
 
+
+        //VAI SER SALVO OS TOKENS DA EXPRESSÃO
         static List<Tuple<string, string>> tokens = new List<Tuple<string, string>>();
 
         public void ValidarToken(List<string> tokens)
@@ -41,6 +47,7 @@ namespace AnalisadorSintatico
             }
         }
 
+        //MOSTRAR NA TELA TIPO DO TOKEN E SUA DESCRIÇÃO
         static void Mostrar()
         {
             Console.WriteLine();
@@ -50,6 +57,8 @@ namespace AnalisadorSintatico
             }
         }
 
+        //MÉTODO PRINCIPAL QUE VAI VERIFICAR SE UM TOKEN É IDENTIFICADOR, CARACTERE ESPECIAL, PALAVRA RESERVADA,
+        //SE É DO TIPO NÚMERIOCO
         public static void VerificarPalavra(string token)
         {
             if (VerificarIdentificador(token))
@@ -74,6 +83,7 @@ namespace AnalisadorSintatico
             }
         }
 
+        //VERIFICAR SE UM TOKEN É UM IDENTIFICADOR
         public static bool VerificarIdentificador(string palavra)
         {
             string identificadorRegex = @"^[a-zA-Z_]\w*$";
@@ -85,11 +95,13 @@ namespace AnalisadorSintatico
             return verificar;
         }
 
+        //VERIFICAR SE UM TOKEN É UMA PALOAVRA RESERVADA
         public static bool VerificarPalavraReservada(string palavra)
         {
             return palavraReservada.ContainsKey(palavra);
         }
 
+        //VERIFICAR SE UM TOKEN É UM CARACTERE ESPECIAL
         public static bool VerificarCaractereEspecial(string palavra)
         {
             char[] caracteres = palavra.ToCharArray();
@@ -101,6 +113,7 @@ namespace AnalisadorSintatico
             return vereficar;
         }
 
+        //VERIFICAR SE O TOKEN É UM NÚMERO
         public static bool VerificarNumero(string palavra)
         {
             string identificadorRegex = @"^-?\d+(\.\d+)?$";
