@@ -44,6 +44,8 @@ namespace AnalisadorSintatico
             novaExpressao = novaExpressao.Replace(")", " ) ");
             novaExpressao = novaExpressao.Replace("+", " + ");
             novaExpressao = novaExpressao.Replace("-", " - ");
+            novaExpressao = novaExpressao.Replace("*", " * ");
+            novaExpressao = novaExpressao.Replace("/", " / ");
 
 
 
