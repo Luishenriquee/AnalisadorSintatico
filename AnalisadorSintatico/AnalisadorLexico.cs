@@ -77,6 +77,10 @@ namespace AnalisadorSintatico
             {
                 tokens.Add(new Tuple<string, string>(token, "TIPO NUMERICO"));
             }
+            else if(VerificarOperador(token))
+            {
+                tokens.Add(new Tuple<string, string>(token, "TIPO OPERADOR"));
+            }
             else
             {
                 tokens.Add(new Tuple<string, string>(token, "NÃO RECONHECIDO"));
@@ -117,6 +121,15 @@ namespace AnalisadorSintatico
         public static bool VerificarNumero(string palavra)
         {
             string identificadorRegex = @"^-?\d+(\.\d+)?$";
+            return Regex.IsMatch(palavra, identificadorRegex);
+        }
+
+        //VERIFICAR SE O TOKEN É UM OPERADOR
+
+        public static bool VerificarOperador(string palavra)
+        {
+            string identificadorRegex = @"[+\-/*]";
+
             return Regex.IsMatch(palavra, identificadorRegex);
         }
     }

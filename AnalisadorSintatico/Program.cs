@@ -10,7 +10,7 @@ namespace AnalisadorSintatico
         static void Main()
         {
             string nomeArquivo = "Arquivo.txt";
-            string caminhoArquivo = @"C:\Users\solda\OneDrive\Área de Trabalho\Analisador";
+            string caminhoArquivo = @"C:\Users\anton\Desktop\Arquivo";
 
             string expressao = ConsultarArquivo(nomeArquivo, caminhoArquivo);
 
@@ -42,6 +42,10 @@ namespace AnalisadorSintatico
             string novaExpressao = expressao.Replace("(", " ( ");
             novaExpressao = novaExpressao.Replace(",", " , ");
             novaExpressao = novaExpressao.Replace(")", " ) ");
+            novaExpressao = novaExpressao.Replace("+", " + ");
+            novaExpressao = novaExpressao.Replace("-", " - ");
+
+
 
             palavras = novaExpressao.Split(' ').ToList();
 
