@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace AnalisadorSintatico
@@ -39,7 +40,13 @@ namespace AnalisadorSintatico
                 }
 
                 Mostrar();
-                Console.WriteLine("Finalizada Análise Lexica sem Erros.");
+
+                bool validacao = Validacao(tokens);
+                
+                if(validacao)
+                    Console.WriteLine("Finalizada Análise Lexica sem Erros.");
+                else
+                    Console.WriteLine("Ocorreu um erro na Análise Lexica.");
             }
             catch (Exception ex)
             {
@@ -50,11 +57,8 @@ namespace AnalisadorSintatico
         //MOSTRAR NA TELA TIPO DO TOKEN E SUA DESCRIÇÃO
         static void Mostrar()
         {
-            Console.WriteLine();
             foreach (var token in tokens.Select((value, index) => new { Value = value, Index = index }))
-            {
                 Console.WriteLine("Token: " + token.Value.Item1 + " | Descrição: " + token.Value.Item2);
-            }
         }
 
         //MÉTODO PRINCIPAL QUE VAI VERIFICAR SE UM TOKEN É IDENTIFICADOR, CARACTERE ESPECIAL, PALAVRA RESERVADA,
@@ -77,7 +81,7 @@ namespace AnalisadorSintatico
             {
                 tokens.Add(new Tuple<string, string>(token, "TIPO NUMERICO"));
             }
-            else if(VerificarOperador(token))
+            else if (VerificarOperador(token))
             {
                 tokens.Add(new Tuple<string, string>(token, "TIPO OPERADOR"));
             }
@@ -131,6 +135,38 @@ namespace AnalisadorSintatico
             string identificadorRegex = @"[+\-/*]";
 
             return Regex.IsMatch(palavra, identificadorRegex);
+        }
+
+        public static bool Validacao(List<string> tokens) 
+        {
+            foreach (var token in tokens.Select((value, index) => new { Value = value, Index = index }))
+            {
+                bool valid = Valid();
+
+                if (!valid)
+                    return false;                
+            }
+
+            return true;
+        }
+
+        public static bool Valid()
+        {
+            if (
+                    tokens[0].Item1 == "for" && 
+                    tokens[2].Item1 == "in" &&
+                    tokens[3].Item1 == "range" &&
+                    tokens[4].Item1 == "(" &&
+                    tokens[5].Item1 == "1" &&
+                    tokens[6].Item1 == "," &&
+                    tokens[7].Item1 == "2" &&
+                    tokens[8].Item1 == "," &&
+                    tokens[9].Item1 == "3" &&
+                    tokens[10].Item1 == ")" 
+                )
+                return true;
+
+            return false;
         }
     }
 }
