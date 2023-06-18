@@ -18,9 +18,9 @@ namespace AnalisadorSintatico
                 Console.WriteLine("Arquivo não encontrado.");
             else
             {
-                List<string> palavras = SepararExpressaoEmPalavra(expressao);
-                AnalisadorLexico analisadorLexico = new AnalisadorLexico();
-                analisadorLexico.ValidarToken(palavras);
+                List<string> tokens = SepararExpressaoEmTokens(expressao);
+                Analisador analisadorLexico = new Analisador();
+                analisadorLexico.ValidarToken(tokens);
             }
         }
 
@@ -34,10 +34,9 @@ namespace AnalisadorSintatico
                 return null;
         }
 
-        static List<string> SepararExpressaoEmPalavra(string expressao)
+        static List<string> SepararExpressaoEmTokens(string expressao)
         {
-            List<string> novasPalavras = new List<string>();
-            List<string> palavras = new List<string>();
+            List<string> novosTokens = new List<string>();
 
             string novaExpressao = expressao.Replace("(", " ( ");
             novaExpressao = novaExpressao.Replace(",", " , ");
@@ -47,17 +46,15 @@ namespace AnalisadorSintatico
             novaExpressao = novaExpressao.Replace("*", " * ");
             novaExpressao = novaExpressao.Replace("/", " / ");
 
+            List<string> tokens = novaExpressao.Split(' ').ToList();
 
-
-            palavras = novaExpressao.Split(' ').ToList();
-
-            foreach (string palavra in palavras)
+            foreach (string token in tokens)
             {
-                if (!string.IsNullOrEmpty(palavra))
-                    novasPalavras.Add(palavra);
+                if (!string.IsNullOrEmpty(token))
+                    novosTokens.Add(token);
             }
 
-            return novasPalavras;
+            return novosTokens;
         }
     }
 }

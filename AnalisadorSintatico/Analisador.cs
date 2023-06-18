@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace AnalisadorSintatico
 {
-    public class AnalisadorLexico
+    public class Analisador
     {
 
         //REPRESENTA A PALAVRAS RESERVADAS DA EXPRESSÃO 
@@ -36,7 +35,7 @@ namespace AnalisadorSintatico
             {
                 foreach (string token in tokens)
                 {
-                    VerificarPalavra(token);
+                    RotularToken(token);
                 }
 
                 Mostrar();
@@ -44,9 +43,9 @@ namespace AnalisadorSintatico
                 bool validacao = Validacao(tokens);
                 
                 if(validacao)
-                    Console.WriteLine("Finalizada Análise Lexica sem Erros.");
+                    Console.WriteLine("Finalizada Análise sem Erros.");
                 else
-                    Console.WriteLine("Ocorreu um erro na Análise Lexica.");
+                    Console.WriteLine("Ocorreu um erro na Análise.");
             }
             catch (Exception ex)
             {
@@ -63,7 +62,7 @@ namespace AnalisadorSintatico
 
         //MÉTODO PRINCIPAL QUE VAI VERIFICAR SE UM TOKEN É IDENTIFICADOR, CARACTERE ESPECIAL, PALAVRA RESERVADA,
         //SE É DO TIPO NÚMERIOCO
-        public static void VerificarPalavra(string token)
+        public static void RotularToken(string token)
         {
             if (VerificarIdentificador(token))
             {
@@ -141,7 +140,7 @@ namespace AnalisadorSintatico
         {
             foreach (var token in tokens.Select((value, index) => new { Value = value, Index = index }))
             {
-                bool valid = Valid();
+                bool valid = AnalisadorSintatico();
 
                 if (!valid)
                     return false;                
@@ -150,7 +149,7 @@ namespace AnalisadorSintatico
             return true;
         }
 
-        public static bool Valid()
+        public static bool AnalisadorSintatico()
         {
             if (
                     tokens[0].Item1 == "for" && 
