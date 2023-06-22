@@ -10,7 +10,7 @@ namespace AnalisadorSintatico
         static void Main()
         {
             string nomeArquivo = "Arquivo.txt";
-            string caminhoArquivo = @"C:\Users\anton\Desktop\Arquivo";
+            string caminhoArquivo = @"C:\Users\solda\OneDrive\Área de Trabalho\Analisador";
 
             string expressao = ConsultarArquivo(nomeArquivo, caminhoArquivo);
 

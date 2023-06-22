@@ -29,10 +29,13 @@ namespace AnalisadorSintatico
         //VAI SER SALVO OS TOKENS DA EXPRESSÃO
         static List<Tuple<string, string>> tokens = new List<Tuple<string, string>>();
 
+        static string erro = String.Empty;
+
         public void ValidarToken(List<string> tokens)
         {
             try
             {
+                Console.WriteLine(" == ANALISE LEXICA == \n");
                 foreach (string token in tokens)
                 {
                     RotularToken(token);
@@ -40,9 +43,9 @@ namespace AnalisadorSintatico
 
                 Mostrar();
 
-                bool validacao = Validacao(tokens);
-                
-                if(validacao)
+                bool validacao = Validacao();
+
+                if (validacao)
                     Console.WriteLine("Finalizada Análise sem Erros.");
                 else
                     Console.WriteLine("Ocorreu um erro na Análise.");
@@ -136,36 +139,121 @@ namespace AnalisadorSintatico
             return Regex.IsMatch(palavra, identificadorRegex);
         }
 
-        public static bool Validacao(List<string> tokens) 
+        public static bool Validacao()
         {
             foreach (var token in tokens.Select((value, index) => new { Value = value, Index = index }))
             {
-                bool valid = AnalisadorSintatico();
-
-                if (!valid)
-                    return false;                
+                AnalisadorSintatico();
             }
 
             return true;
         }
 
-        public static bool AnalisadorSintatico()
+        public static void AnalisadorSintatico()
         {
-            if (
-                    tokens[0].Item1 == "for" && 
-                    tokens[2].Item1 == "in" &&
-                    tokens[3].Item1 == "range" &&
-                    tokens[4].Item1 == "(" &&
-                    tokens[5].Item1 == "1" &&
-                    tokens[6].Item1 == "," &&
-                    tokens[7].Item1 == "2" &&
-                    tokens[8].Item1 == "," &&
-                    tokens[9].Item1 == "3" &&
-                    tokens[10].Item1 == ")" 
-                )
-                return true;
+            //if (
+            //        tokens[0].Item1 == "for" &&
+            //        tokens[2].Item1 == "in" &&
+            //        tokens[3].Item1 == "range" &&
+            //        tokens[4].Item1 == "(" &&
+            //        tokens[5].Item1 == "1" &&
+            //        tokens[6].Item1 == "," &&
+            //        tokens[7].Item1 == "2" &&
+            //        tokens[8].Item1 == "," &&
+            //        tokens[9].Item1 == "3" &&
+            //        tokens[10].Item1 == ")"
+            //    )
+            //    return true;
 
-            return false;
+            //return false;
+            Console.WriteLine("\n == ANALISE SINTATICA == \n");
+
+            For();
+        }
+
+        public static void For()
+        {
+            Console.WriteLine("Entrou no <for>");
+
+            if (tokens[0].Item1 == "for")
+                Identificador();
+            else
+                Error();
+        }
+
+        public static void Identificador()
+        {
+            Console.WriteLine("Entrou no <Identificador>");
+
+            In();
+        }
+
+        public static void In()
+        {
+            Console.WriteLine("Entrou no <IN>");
+
+            if (tokens[2].Item1 == "in")
+                Range();
+            else
+                Error();
+        }
+
+        public static void Range()
+        {
+            Console.WriteLine("Entrou no <RANGE>");
+
+            if (tokens[3].Item1 == "range")
+                ParemEsq();
+            else
+                Error();
+        }
+
+        public static void ParemEsq()
+        {
+            Console.WriteLine("Entrou no <PAREM_ESQ>");
+
+            if (tokens[4].Item1 == "(")
+                ValidarNumero();
+        }
+
+
+        //TODO: Corrigir
+        public static void ValidarNumero()
+        {
+            Console.WriteLine("Entrou no <NUMERAL>");
+
+            if (tokens[5].Item1 == "1" || tokens[5].Item1 == "2" || tokens[5].Item1 == "3")
+                Virgula();
+            else if (tokens[7].Item1 == "1" || tokens[7].Item1 == "2" || tokens[7].Item1 == "3")
+                Virgula();
+            else if (tokens[9].Item1 == "1" || tokens[9].Item1 == "2" || tokens[9].Item1 == "3")
+                ParemDir();
+            else
+                Error();
+        }
+
+        public static void Virgula()
+        {
+            Console.WriteLine("Entrou no <VIRGULA>");
+
+            if (tokens[6].Item1 == ",")
+                ValidarNumero();
+            else if (tokens[8].Item1 == ",")
+                ParemDir();
+        }
+
+        public static void ParemDir()
+        {
+            Console.WriteLine("Entrou no <PAREM_DIR>");
+
+            if (tokens[10].Item1 == ")")
+                Console.WriteLine("Fim da analisie lexica");
+        }
+
+        public static void Error()
+        {
+            Console.WriteLine("Um erro foi detectado\n");
+            Environment.Exit(0);
         }
     }
 }
