@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace AnalisadorSintatico
 {
     public class Analisador
     {
-
         //REPRESENTA A PALAVRAS RESERVADAS DA EXPRESSÃO 
         static Dictionary<string, string> palavraReservada = new Dictionary<string, string>()
         {
@@ -15,7 +13,6 @@ namespace AnalisadorSintatico
             { "in", "2" },
             { "range", "3" }
         };
-
 
         //REPRESENTA OS CARACTERES ESPECIAIS DA EXPRESSÃO
         static Dictionary<char, string[]> caractereEspecial = new Dictionary<char, string[]>()
@@ -25,30 +22,22 @@ namespace AnalisadorSintatico
             { ',', new string[] { "6", "VIRGULA." } }
         };
 
-
         //VAI SER SALVO OS TOKENS DA EXPRESSÃO
         static List<Tuple<string, string>> tokens = new List<Tuple<string, string>>();
-
-        static string erro = String.Empty;
 
         public void ValidarToken(List<string> tokens)
         {
             try
             {
                 Console.WriteLine(" == ANALISE LEXICA == \n");
+
                 foreach (string token in tokens)
-                {
                     RotularToken(token);
-                }
 
                 Mostrar();
+                Console.WriteLine(" \n == FIM DA ANALISE LEXICA == \n");
 
-                bool validacao = Validacao();
-
-                if (validacao)
-                    Console.WriteLine("Finalizada Análise sem Erros.");
-                else
-                    Console.WriteLine("Ocorreu um erro na Análise.");
+                AnalisadorSintatico();
             }
             catch (Exception ex)
             {
@@ -59,8 +48,8 @@ namespace AnalisadorSintatico
         //MOSTRAR NA TELA TIPO DO TOKEN E SUA DESCRIÇÃO
         static void Mostrar()
         {
-            foreach (var token in tokens.Select((value, index) => new { Value = value, Index = index }))
-                Console.WriteLine("Token: " + token.Value.Item1 + " | Descrição: " + token.Value.Item2);
+            foreach (var token in tokens)
+                Console.WriteLine("Token: " + token.Item1 + " | Descrição: " + token.Item2);
         }
 
         //MÉTODO PRINCIPAL QUE VAI VERIFICAR SE UM TOKEN É IDENTIFICADOR, CARACTERE ESPECIAL, PALAVRA RESERVADA,
@@ -97,12 +86,7 @@ namespace AnalisadorSintatico
         public static bool VerificarIdentificador(string palavra)
         {
             string identificadorRegex = @"^[a-zA-Z_]\w*$";
-            bool verificar = false;
-
-            if (Regex.IsMatch(palavra, identificadorRegex) == true && !VerificarPalavraReservada(palavra) == true)
-                verificar = Regex.IsMatch(palavra, identificadorRegex);
-
-            return verificar;
+            return Regex.IsMatch(palavra, identificadorRegex) && !VerificarPalavraReservada(palavra);
         }
 
         //VERIFICAR SE UM TOKEN É UMA PALOAVRA RESERVADA
@@ -131,7 +115,6 @@ namespace AnalisadorSintatico
         }
 
         //VERIFICAR SE O TOKEN É UM OPERADOR
-
         public static bool VerificarOperador(string palavra)
         {
             string identificadorRegex = @"[+\-/*]";
@@ -139,33 +122,8 @@ namespace AnalisadorSintatico
             return Regex.IsMatch(palavra, identificadorRegex);
         }
 
-        public static bool Validacao()
-        {
-            foreach (var token in tokens.Select((value, index) => new { Value = value, Index = index }))
-            {
-                AnalisadorSintatico();
-            }
-
-            return true;
-        }
-
         public static void AnalisadorSintatico()
         {
-            //if (
-            //        tokens[0].Item1 == "for" &&
-            //        tokens[2].Item1 == "in" &&
-            //        tokens[3].Item1 == "range" &&
-            //        tokens[4].Item1 == "(" &&
-            //        tokens[5].Item1 == "1" &&
-            //        tokens[6].Item1 == "," &&
-            //        tokens[7].Item1 == "2" &&
-            //        tokens[8].Item1 == "," &&
-            //        tokens[9].Item1 == "3" &&
-            //        tokens[10].Item1 == ")"
-            //    )
-            //    return true;
-
-            //return false;
             Console.WriteLine("\n == ANALISE SINTATICA == \n");
 
             For();
@@ -185,7 +143,10 @@ namespace AnalisadorSintatico
         {
             Console.WriteLine("Entrou no <Identificador>");
 
-            In();
+            if (VerificarIdentificador(tokens[1].Item1))
+                In();
+            else
+                Error();
         }
 
         public static void In()
@@ -216,44 +177,77 @@ namespace AnalisadorSintatico
                 ValidarNumero();
         }
 
-
-        //TODO: Corrigir
         public static void ValidarNumero()
         {
             Console.WriteLine("Entrou no <NUMERAL>");
 
-            if (tokens[5].Item1 == "1" || tokens[5].Item1 == "2" || tokens[5].Item1 == "3")
-                Virgula();
-            else if (tokens[7].Item1 == "1" || tokens[7].Item1 == "2" || tokens[7].Item1 == "3")
-                Virgula();
-            else if (tokens[9].Item1 == "1" || tokens[9].Item1 == "2" || tokens[9].Item1 == "3")
+            int cont = QtdTokens();
+
+            string item5 = tokens[5].Item1;
+            string item7 = tokens[7].Item1;
+            string aux = tokens[cont - 2].Item1;
+
+            if ((item5 == "1" && aux == "1") ||
+                (item5 == "2" && aux == "2") ||
+                (item5 == "3" && aux == "3"))
+            {
                 ParemDir();
+            }
+            else if ((item5 == "1" && item7 == "2" && aux == "2") ||
+                     (item5 == "1" && item7 == "3" && aux == "3") ||
+                     (item5 == "2" && item7 == "3" && aux == "3"))
+            {
+                ParemDir();
+            }
+            else if (item5 == "1" && item7 == "2" && tokens[9].Item1 == "3" && aux == "3")
+            {
+                ParemDir();
+            }
+            else if ((item5 == "1" || item5 == "2") && aux == ",")
+            {
+                Virgula();
+            }
+            else if (item5 == "1" && item7 == "2" && aux == ",")
+            {
+                Virgula();
+            }
             else
+            {
                 Error();
+            }
         }
 
         public static void Virgula()
         {
             Console.WriteLine("Entrou no <VIRGULA>");
 
-            if (tokens[6].Item1 == ",")
+            int cont = QtdTokens();
+
+            if (tokens[6].Item1 == "," && tokens[cont - 2].Item1 == "2")
                 ValidarNumero();
-            else if (tokens[8].Item1 == ",")
-                ParemDir();
+            else
+                Error();
         }
 
         public static void ParemDir()
         {
             Console.WriteLine("Entrou no <PAREM_DIR>");
 
-            if (tokens[10].Item1 == ")")
-                Console.WriteLine("Fim da analisie lexica");
+            int cont = QtdTokens();
+
+            if (tokens[cont - 1].Item1 == ")")
+                Console.WriteLine("Fim da analisie sintatica");
         }
 
         public static void Error()
         {
             Console.WriteLine("Um erro foi detectado\n");
             Environment.Exit(0);
+        }
+
+        public static int QtdTokens()
+        {
+            return tokens.Count;
         }
     }
 }
