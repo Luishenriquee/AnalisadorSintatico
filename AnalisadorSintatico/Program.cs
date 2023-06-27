@@ -7,6 +7,7 @@ namespace AnalisadorSintatico
 {
     class Program
     {
+        //BUSCAR O ARQUIVO PELO DIRETÓRIO E NOME E CHAMAR O MÉTODO PARA VALIDAR TOKENS
         static void Main()
         {
             string nomeArquivo = "Arquivo.txt";
@@ -24,6 +25,7 @@ namespace AnalisadorSintatico
             }
         }
 
+        //VERIFICAR SE O ARQUIVO EXISTE NO DIRETÓRIO INFORMADO
         static string ConsultarArquivo(string nomeArquivo, string caminhoArquivo)
         {
             string caminhoCompleto = Path.Combine(caminhoArquivo, nomeArquivo);
@@ -34,6 +36,7 @@ namespace AnalisadorSintatico
                 return null;
         }
 
+        //SEPARA O EXPRESSÃO EM PALAVRAS(TOKENS) E MONTAR UMA LISTA DE PALAVRAS
         static List<string> SepararExpressaoEmTokens(string expressao)
         {
             List<string> novosTokens = new List<string>();

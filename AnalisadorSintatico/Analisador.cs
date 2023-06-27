@@ -52,8 +52,8 @@ namespace AnalisadorSintatico
                 Console.WriteLine("Token: " + token.Item1 + " | Descrição: " + token.Item2);
         }
 
-        //MÉTODO PRINCIPAL QUE VAI VERIFICAR SE UM TOKEN É IDENTIFICADOR, CARACTERE ESPECIAL, PALAVRA RESERVADA,
-        //SE É DO TIPO NÚMERIOCO
+        //VERIFICA SE UM TOKEN É IDENTIFICADOR, CARACTERE ESPECIAL, PALAVRA RESERVADA OU TIPO NÚMERIOCO
+        //ADICIONAR NA VARIÁVEL GLOBAL TOKENS
         public static void RotularToken(string token)
         {
             if (VerificarIdentificador(token))
@@ -89,7 +89,7 @@ namespace AnalisadorSintatico
             return Regex.IsMatch(palavra, identificadorRegex) && !VerificarPalavraReservada(palavra);
         }
 
-        //VERIFICAR SE UM TOKEN É UMA PALOAVRA RESERVADA
+        //VERIFICAR SE UM TOKEN É UMA PALAVRA RESERVADA
         public static bool VerificarPalavraReservada(string palavra)
         {
             return palavraReservada.ContainsKey(palavra);
@@ -122,6 +122,7 @@ namespace AnalisadorSintatico
             return Regex.IsMatch(palavra, identificadorRegex);
         }
 
+        //COMEÇANDO A ANALISE SINTÁTICA, VERIFICANDO A EXPRESSÃO for in var range (1, 2, 3)
         public static void AnalisadorSintatico()
         {
             Console.WriteLine("\n == ANALISE SINTATICA == \n");
@@ -133,7 +134,7 @@ namespace AnalisadorSintatico
         {
             Console.WriteLine("Entrou no <for>");
 
-            if (tokens[0].Item1 == "for")
+            if (tokens[0].Item1 == "FOR")
                 Identificador();
             else
                 Error();
@@ -141,7 +142,7 @@ namespace AnalisadorSintatico
 
         public static void Identificador()
         {
-            Console.WriteLine("Entrou no <Identificador>");
+            Console.WriteLine("Entrou no <IDENTIFICADOR>");
 
             if (VerificarIdentificador(tokens[1].Item1))
                 In();
@@ -177,6 +178,7 @@ namespace AnalisadorSintatico
                 ValidarNumero();
         }
 
+        //VERIFICAR SE A EXPRESSÃO ACEITA OS NÚMERAIS, COMO: range(1, 2, 3) | (1, 2) | (1)
         public static void ValidarNumero()
         {
             Console.WriteLine("Entrou no <NUMERAL>");
@@ -184,7 +186,13 @@ namespace AnalisadorSintatico
             int cont = QtdTokens();
 
             string item5 = tokens[5].Item1;
-            string item7 = tokens[7].Item1;
+            string item7 = string.Empty;
+
+            if (cont > 7)
+                item7 = tokens[7].Item1;
+            else
+                item7 = "1";
+
             string aux = tokens[cont - 2].Item1;
 
             if ((item5 == "1" && aux == "1") ||
