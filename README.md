@@ -1,4 +1,4 @@
-Trabalho de Linguagens de Programação para desenvolver um analisador sintático.
+Trabalho da disciplina de Linguagens de Programação para desenvolver um analisador sintático.
 
 Equipe:
 1. FRANCISCA CRISTIANA RODRIGUES ARAÚJO
